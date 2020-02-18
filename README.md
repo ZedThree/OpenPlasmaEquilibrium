@@ -5,6 +5,9 @@ plasma equilibria using [HDF5][hdf5]. Currently a work in progress,
 absolutely everything about this is subject to change, including the
 name.
 
+OPEQ is licensed under Creative Commons Attribution Share Alike 4.0
+International. See [LICENSE.md](LICENSE.md).
+
 ## TODO
 
 - Provide schema and validator
