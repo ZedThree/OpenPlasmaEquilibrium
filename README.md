@@ -5,6 +5,11 @@ plasma equilibria using [HDF5][hdf5]. Currently a work in progress,
 absolutely everything about this is subject to change, including the
 name.
 
+## TODO
+
+- Provide schema and validator
+- Provide units for all quantities
+
 ## OPEQ Specification 0.1.0
 
 - OPEQ files are HDF5 files
@@ -24,39 +29,58 @@ name.
     `/equilibrium/tokamak/coils/P2/P2L` are two coils that make up the
     `P2` circuit
 
+### Metadata (in root `/`)
 
-| Variable                                          | Required       | Rank | Type     | Units    | Description                                                                                                                          |
-|:--------------------------------------------------|:---------------|------|:---------|:---------|:-------------------------------------------------------------------------------------------------------------------------------------|
-| `/version`                                        | yes            | n/a  | `string` | n/a      | Version number of the OPEQ specification this file conforms to                                                                       |
-| `/creation_software`                              | yes            | n/a  | `string` | n/a      | Name of the software used to create this file                                                                                        |
-| `/creation_version`                               | yes            | n/a  | `string` | n/a      | Version of the software used to create this file                                                                                     |
-| `/symmetry`                                       | no             | n/a  | `string` | n/a      | Type of symmetry. Only "tokamak" is currently supported                                                                              |
-| `/equilibrium/Rmin`                               | no             | 0    | `float`  | metres   | Minimum major radius                                                                                                                 |
-| `/equilibrium/Rmax`                               | no             | 0    | `float`  | metres   | Maximum major radius                                                                                                                 |
-| `/equilibrium/R_1D`                               | yes            | 1    | `float`  | metres   | Major radius                                                                                                                         |
-| `/equilibrium/R`                                  | no             | 2    | `float`  | metres   | Major radius                                                                                                                         |
-| `/equilibrium/Zmin`                               | no             | 0    | `float`  | metres   | Minimum vertical coordinate                                                                                                          |
-| `/equilibrium/Zmax`                               | no             | 0    | `float`  | metres   | Maximum vertical coordinate                                                                                                          |
-| `/equilibrium/Z_1D`                               | yes            | 1    | `float`  | metres   | Vertical coordinate                                                                                                                  |
-| `/equilibrium/Z`                                  | no             | 2    | `float`  | metres   | Vertical coordinate                                                                                                                  |
-| `/equilibrium/boundary_function`                  | no             | 0    | `string` | n/a      | Name of boundary function to apply. One of `["fixedBoundary", "freeBoundary", "freeBoundaryHagenow"]`                                |
-| `/equilibrium/current`                            | no             | 0    | `float`  | Amps     | Plasma current                                                                                                                       |
-| `/equilibrium/psi`                                | yes            | 2    | `float`  | FIXME    | Total poloidal flux, including contribution from plasma and external coils as a function of `(R, Z)`                                 |
-| `/equilibrium/plasma_psi`                         | yes            | 2    | `float`  | FIXME    | Poloidal flux, just contribution from plasma, as a function of `(R, Z)`                                                              |
-| `/equilibrium/pressure`                           | no             | 2    | `float`  | FIXME    | Pressure as a function of `(R, Z)`                                                                                                   |
-| `/equilibrium/toroidal_current_density`           | no             | 2    | `float`  | FIXME    | Toroidal current density as a function of `(R, Z)`                                                                                   |
-| `/equilibrium/<symmetry>/wall_R`                  | no             | 1    | `float`  | metres   | Major radius locations of points defining the machine wall                                                                           |
-| `/equilibrium/<symmetry>/wall_Z`                  | no             | 1    | `float`  | metres   | Vertical locations of points defining the machine wall                                                                               |
-| `/equilibrium/<symmetry>/coils/<name>/R`          | no<sup>1</sup> | 0    | `float`  | metres   | Major radius location of the coil                                                                                                    |
-| `/equilibrium/<symmetry>/coils/<name>/Z`          | no<sup>1</sup> | 0    | `float`  | metres   | Vertical location of the coil                                                                                                        |
-| `/equilibrium/<symmetry>/coils/<name>/area`       | no<sup>1</sup> | 0    | `float`  | metres^2 | Cross-sectional area of the coil                                                                                                     |
-| `/equilibrium/<symmetry>/coils/<name>/current`    | no<sup>1</sup> | 0    | `float`  | Amps     | Current in each turn of the coil                                                                                                     |
-| `/equilibrium/<symmetry>/coils/<name>/turns`      | no<sup>1</sup> | 0    | `int`    | n/a      | Number of turns in coil                                                                                                              |
-| `/equilibrium/<symmetry>/coils/<name>/control`    | no<sup>1</sup> | 0    | `bool`   | n/a      | Control system is enabled                                                                                                            |
-| `/equilibrium/<symmetry>/coils/<name>/multiplier` | no<sup>1</sup> | 0    | `float`  | n/a      | If this coil is part of a circuit, the multiplier of the current. This must be present if and only if this coil is part of a circuit |
-|                                                   |                |      |          |          |                                                                                                                                      |
+| Variable             | Required | Rank | Type     | Units | Description                                                    |
+|:---------------------|:---------|------|:---------|:------|:---------------------------------------------------------------|
+| `/version`           | yes      | n/a  | `string` | n/a   | Version number of the OPEQ specification this file conforms to |
+| `/creation_software` | yes      | n/a  | `string` | n/a   | Name of the software used to create this file                  |
+| `/creation_version`  | yes      | n/a  | `string` | n/a   | Version of the software used to create this file               |
+| `/symmetry`          | no       | n/a  | `string` | n/a   | Type of symmetry. Only "tokamak" is currently supported        |
 
-<sup>1</sup>: If one of these variables is present, they must all be present
+### Equilibrium quantities (in group `/equilibrium`)
+
+| Variable                   | Required       | Rank | Type     | Units  | Description                                                                                           |
+|:---------------------------|:---------------|------|:---------|:-------|:------------------------------------------------------------------------------------------------------|
+| `Rmin`                     | no             | 0    | `float`  | metres | Minimum major radius                                                                                  |
+| `Rmax`                     | no             | 0    | `float`  | metres | Maximum major radius                                                                                  |
+| `R_1D`                     | yes            | 1    | `float`  | metres | Major radius                                                                                          |
+| `R`                        | no<sup>1</sup> | 2    | `float`  | metres | Major radius                                                                                          |
+| `Zmin`                     | no             | 0    | `float`  | metres | Minimum vertical coordinate                                                                           |
+| `Zmax`                     | no             | 0    | `float`  | metres | Maximum vertical coordinate                                                                           |
+| `Z_1D`                     | yes            | 1    | `float`  | metres | Vertical coordinate                                                                                   |
+| `Z`                        | no<sup>1</sup> | 2    | `float`  | metres | Vertical coordinate                                                                                   |
+| `boundary_function`        | no             | n/a  | `string` | n/a    | Name of boundary function to apply. One of `["fixedBoundary", "freeBoundary", "freeBoundaryHagenow"]` |
+| `current`                  | no             | 0    | `float`  | Amps   | Plasma current                                                                                        |
+| `psi`                      | yes            | 2    | `float`  | FIXME  | Total poloidal flux, including contribution from plasma and external coils as a function of `(R, Z)`  |
+| `plasma_psi`               | yes            | 2    | `float`  | FIXME  | Poloidal flux, just contribution from plasma, as a function of `(R, Z)`                               |
+| `pressure`                 | no             | 2    | `float`  | FIXME  | Pressure as a function of `(R, Z)`                                                                    |
+| `toroidal_current_density` | no             | 2    | `float`  | FIXME  | Toroidal current density as a function of `(R, Z)`                                                    |
+
+<sup>1</sup>.: If one of these variables is present, they must both be present
+
+### Machine information (in group `/equilibrium/<symmetry>`)
+
+| Variable                  | Required       | Rank | Type    | Units    | Description                                                      |
+|:--------------------------|:---------------|------|:--------|:---------|:-----------------------------------------------------------------|
+| `wall_R`                  | no<sup>2</sup> | 1    | `float` | metres   | Major radius locations of points defining the machine wall       |
+| `wall_Z`                  | no<sup>2</sup> | 1    | `float` | metres   | Vertical locations of points defining the machine wall           |
+| `coils/<name>/R`          | no<sup>3</sup> | 0    | `float` | metres   | Major radius location of the coil                                |
+| `coils/<name>/Z`          | no<sup>3</sup> | 0    | `float` | metres   | Vertical location of the coil                                    |
+| `coils/<name>/area`       | no<sup>3</sup> | 0    | `float` | metres^2 | Cross-sectional area of the coil                                 |
+| `coils/<name>/current`    | no<sup>3</sup> | 0    | `float` | Amps     | Current in each turn of the coil                                 |
+| `coils/<name>/turns`      | no<sup>3</sup> | 0    | `int`   | n/a      | Number of turns in coil                                          |
+| `coils/<name>/control`    | no<sup>3</sup> | 0    | `bool`  | n/a      | Control system is enabled                                        |
+| `coils/<name>/multiplier` | no<sup>4</sup> | 0    | `float` | n/a      | If this coil is part of a circuit, the multiplier of the current |
+|                           |                |      |         |          |                                                                  |
+
+<sup>2</sup>: If one of these variables is present, they must both be
+present  
+<sup>3</sup>: If one of these variables is present, they must all be
+present  
+<sup>4</sup>: This must be present if and only if this coil is part of a circuit
+
+## Attributes
 
 All variables may have the following attributes:
 
@@ -66,6 +90,7 @@ All variables may have the following attributes:
 | `description` | `string` | Long name of the variable  |
 | `units`       | `string` | SI unit name               |
 
+Variables which have units specified must have the `units` attribute.
 
 
 [hdf5]: https://www.hdfgroup.org/
