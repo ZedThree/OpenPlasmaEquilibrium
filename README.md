@@ -1,11 +1,11 @@
-# Open Plasma Equilibrium
+# Open Plasma Equilibrium Specification
 
-The Open Plasma Equilibrium (OPEQ) file format is a specification for
-plasma equilibria using [HDF5][hdf5]. Currently a work in progress,
-absolutely everything about this is subject to change, including the
-name.
+The Open Plasma Equilibrium Specification (OPEQS) is a description of
+a file format for plasma equilibria using [HDF5][hdf5]. Currently a
+work in progress, absolutely everything about this is subject to
+change, including the name.
 
-OPEQ is licensed under Creative Commons Attribution Share Alike 4.0
+OPEQS is licensed under Creative Commons Attribution Share Alike 4.0
 International. See [LICENSE.md](LICENSE.md).
 
 ## TODO
@@ -13,12 +13,12 @@ International. See [LICENSE.md](LICENSE.md).
 - Provide schema and validator
 - Provide units for all quantities
 
-## OPEQ Specification 0.1.0
+## OPEQS Specification 0.1.0
 
-- OPEQ files are HDF5 files
+- OPEQS files are HDF5 files
     - Specify HDF5 version? At least 1.10? Backwards compatibility
       issues
-- Files must have some metadata: what version of OPEQ spec, what
+- Files must have some metadata: what version of OPEQS spec, what
   software was used to create the file (including that software
   version)
 - Currently targeting only tokamaks, but for future-proofing, this can
@@ -34,12 +34,12 @@ International. See [LICENSE.md](LICENSE.md).
 
 ### Metadata (in root `/`)
 
-| Variable             | Required | Rank | Type     | Units | Description                                                    |
-|:---------------------|:---------|------|:---------|:------|:---------------------------------------------------------------|
-| `/version`           | yes      | n/a  | `string` | n/a   | Version number of the OPEQ specification this file conforms to |
-| `/creation_software` | yes      | n/a  | `string` | n/a   | Name of the software used to create this file                  |
-| `/creation_version`  | yes      | n/a  | `string` | n/a   | Version of the software used to create this file               |
-| `/symmetry`          | no       | n/a  | `string` | n/a   | Type of symmetry. Only "tokamak" is currently supported        |
+| Variable             | Required | Rank | Type     | Units | Description                                                     |
+|:---------------------|:---------|------|:---------|:------|:----------------------------------------------------------------|
+| `/opeqs_version`     | yes      | n/a  | `string` | n/a   | Version number of the OPEQS specification this file conforms to |
+| `/creation_software` | yes      | n/a  | `string` | n/a   | Name of the software used to create this file                   |
+| `/creation_version`  | yes      | n/a  | `string` | n/a   | Version of the software used to create this file                |
+| `/symmetry`          | no       | n/a  | `string` | n/a   | Type of symmetry. Only "tokamak" is currently supported         |
 
 ### Equilibrium quantities (in group `/equilibrium`)
 
